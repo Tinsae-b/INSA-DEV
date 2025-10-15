@@ -1,0 +1,45 @@
+# Development environment with hot-reload (using SQLite)
+services:
+  # Django Backend (Development) - Using SQLite
+  backend:
+    build:
+      context: ./astu_yearbook
+      dockerfile: Dockerfile
+    container_name: yearbook_backend_dev
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./astu_yearbook:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - ALLOWED_HOSTS=localhost,127.0.0.1,backend
+      # No DATABASE_URL - will use SQLite from volume
+    networks:
+      - yearbook_dev_network
+
+  # Next.js Frontend (Development)
+  frontend:
+    build:
+      context: ./astu_front
+      dockerfile: Dockerfile.dev
+    container_name: yearbook_frontend_dev
+    command: npm run dev
+    volumes:
+      - ./astu_front:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/yearbook/api
+    depends_on:
+      - backend
+    networks:
+      - yearbook_dev_network
+
+networks:
+  yearbook_dev_network:
+    driver: bridge
+
+

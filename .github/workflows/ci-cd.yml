@@ -1,0 +1,260 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Backend Testing
+  backend-test:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        working-directory: ./Year-Book/astu_yearbook
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run migrations
+        working-directory: ./Year-Book/astu_yearbook
+        env:
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+          SECRET_KEY: test-secret-key-for-ci
+          DEBUG: True
+        run: |
+          python manage.py migrate
+
+      - name: Run tests
+        working-directory: ./Year-Book/astu_yearbook
+        env:
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+          SECRET_KEY: test-secret-key-for-ci
+          DEBUG: True
+        run: |
+          python manage.py test
+
+      - name: Check code quality
+        working-directory: ./Year-Book/astu_yearbook
+        run: |
+          pip install flake8
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Security check
+        working-directory: ./Year-Book/astu_yearbook
+        env:
+          SECRET_KEY: test-secret-key-for-ci
+          DEBUG: False
+        run: |
+          python manage.py check --deploy --fail-level WARNING
+
+  # Frontend Testing
+  frontend-test:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: ./Year-Book/astu_front/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./Year-Book/astu_front
+        run: npm ci
+
+      - name: Lint code
+        working-directory: ./Year-Book/astu_front
+        run: npm run lint || true
+
+      - name: Build application
+        working-directory: ./Year-Book/astu_front
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000/yearbook/api
+        run: npm run build
+
+  # Security Scanning
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: './Year-Book'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Build Docker Images
+  build-images:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [backend-test, frontend-test]
+    if: github.event_name == 'push'
+    
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) - Backend
+        id: meta-backend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend
+
+      - name: Build and push Backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Year-Book/astu_yearbook
+          push: true
+          tags: ${{ steps.meta-backend.outputs.tags }}
+          labels: ${{ steps.meta-backend.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:buildcache,mode=max
+
+      - name: Extract metadata (tags, labels) - Frontend
+        id: meta-frontend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend
+
+      - name: Build and push Frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Year-Book/astu_front
+          push: true
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+          labels: ${{ steps.meta-frontend.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:buildcache,mode=max
+
+  # Deploy to Production (manual trigger)
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-images]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://yourdomain.com
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            cd /opt/yearbook/Year-Book
+            git pull origin main
+            docker-compose pull
+            docker-compose up -d
+            docker-compose exec -T backend python manage.py migrate
+            docker-compose exec -T backend python manage.py collectstatic --noinput
+
+      - name: Verify deployment
+        run: |
+          sleep 30
+          curl -f https://yourdomain.com/health || exit 1
+          curl -f https://yourdomain.com/yearbook/api/health/ || exit 1
+
+      - name: Notify deployment
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'Production deployment ${{ job.status }}'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+
+  # Deploy to Staging (automatic on develop branch)
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build-images]
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    environment:
+      name: staging
+      url: https://staging.yourdomain.com
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to staging server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd /opt/yearbook-staging/Year-Book
+            git pull origin develop
+            docker-compose -f docker-compose.dev.yml pull
+            docker-compose -f docker-compose.dev.yml up -d
+
+

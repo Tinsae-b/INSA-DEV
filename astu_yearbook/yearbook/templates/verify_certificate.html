@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Verification - INSA Cyber Talent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .verified-badge {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .verified-badge .icon {
+            width: 80px;
+            height: 80px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .verified-badge h2 {
+            color: #10b981;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .student-info {
+            background: #f9fafb;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #6b7280;
+        }
+        
+        .info-value {
+            color: #111827;
+            font-weight: 500;
+        }
+        
+        .certificate-preview {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .certificate-preview img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .quote {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-style: italic;
+            color: #78350f;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .error .icon {
+            font-size: 4em;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+        
+        .error h2 {
+            color: #dc2626;
+            margin-bottom: 15px;
+        }
+        
+        .error p {
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Certificate Verification</h1>
+            <p>INSA Cyber Talent Program</p>
+        </div>
+        
+        {% if verified %}
+        <div class="content">
+            <div class="verified-badge">
+                <div class="icon">✓</div>
+                <h2>Certificate Verified!</h2>
+                <p>This certificate is authentic and valid</p>
+            </div>
+            
+            <div class="student-info">
+                <div class="info-row">
+                    <span class="info-label">Student ID:</span>
+                    <span class="info-value">{{ student_id }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Student Name:</span>
+                    <span class="info-value">{{ student_name }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Department:</span>
+                    <span class="info-value">{{ department }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Issue Date:</span>
+                    <span class="info-value">{{ issue_date }}</span>
+                </div>
+            </div>
+            
+            {% if quote %}
+            <div class="quote">
+                "{{ quote }}"
+            </div>
+            {% endif %}
+            
+            <div class="certificate-preview">
+                <h3 style="margin-bottom: 20px; color: #374151;">Certificate Preview</h3>
+                <img src="{{ certificate_url }}" alt="{{ student_name }}'s Certificate">
+            </div>
+            
+            <div class="actions">
+                <a href="{{ certificate_url }}" download class="btn btn-primary">Download Certificate</a>
+                <a href="{{ certificate_url }}" target="_blank" class="btn btn-secondary">View Full Size</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="content">
+            <div class="error">
+                <div class="icon">⚠️</div>
+                <h2>Certificate Not Found</h2>
+                <p>{{ error }}</p>
+                <p style="margin-top: 10px;">Student ID: <strong>{{ student_id }}</strong></p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

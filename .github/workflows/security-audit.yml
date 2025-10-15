@@ -1,0 +1,84 @@
+name: Security Audit
+
+on:
+  schedule:
+    # Run every Monday at 9 AM
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  dependency-scan:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install safety
+        run: pip install safety
+
+      - name: Check Python dependencies
+        working-directory: ./Year-Book/astu_yearbook
+        run: |
+          pip install -r requirements.txt
+          safety check --json || true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Check npm dependencies
+        working-directory: ./Year-Book/astu_front
+        run: |
+          npm install
+          npm audit --json || true
+
+  docker-scan:
+    name: Docker Image Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy scanner - Backend
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: './Year-Book/astu_yearbook'
+          format: 'table'
+          exit-code: '0'
+
+      - name: Run Trivy scanner - Frontend
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: './Year-Book/astu_front'
+          format: 'table'
+          exit-code: '0'
+
+  secret-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+
+

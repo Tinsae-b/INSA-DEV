@@ -1,0 +1,172 @@
+{
+  "django_rest_api_examples": {
+    "university_info": {
+      "endpoint": "GET /api/university/info/",
+      "response": {
+        "id": 1,
+        "name": "Adama Science and Technology University",
+        "established": 1993,
+        "location": "Adama, Ethiopia",
+        "motto": "Excellence in Science and Technology",
+        "description": "ASTU is a leading institution of higher learning in Ethiopia...",
+        "vision": "To be a world-class university in science and technology...",
+        "mission": "To provide quality education, conduct cutting-edge research...",
+        "image": "https://api.example.com/media/university/campus.jpg"
+      }
+    },
+    "departments_list": {
+      "endpoint": "GET /api/departments/",
+      "response": {
+        "count": 6,
+        "results": [
+          {
+            "id": 1,
+            "name": "Computer Science and Engineering",
+            "code": "CSE",
+            "description": "Leading innovation in software development...",
+            "head": "Dr. Alemayehu Tadesse",
+            "faculty_count": 45,
+            "student_count": 1200,
+            "programs": ["BSc Computer Science", "MSc Software Engineering"],
+            "achievements": ["Best Research Department 2023"],
+            "image": "https://api.example.com/media/departments/cse.jpg",
+            "established": 1995
+          }
+        ]
+      }
+    },
+    "students_list": {
+      "endpoint": "GET /api/students/?program=computer-science&page=1",
+      "response": {
+        "count": 150,
+        "next": "http://api.example.com/api/students/?page=2",
+        "previous": null,
+        "results": [
+          {
+            "id": 1,
+            "name": "Hanan Mohammed",
+            "program": "Computer Science",
+            "year": "4th Year",
+            "gpa": 3.95,
+            "achievements": ["Dean's List", "Best Project Award"],
+            "hometown": "Addis Ababa",
+            "image": "https://api.example.com/media/students/hanan.jpg",
+            "bio": "Passionate about AI and machine learning...",
+            "graduation_year": 2024,
+            "email": "hanan.mohammed@student.astu.edu.et"
+          }
+        ]
+      }
+    },
+    "alumni_list": {
+      "endpoint": "GET /api/alumni/?industry=technology",
+      "response": {
+        "count": 500,
+        "results": [
+          {
+            "id": 1,
+            "name": "Dr. Alemayehu Worku",
+            "graduation_year": 2010,
+            "program": "Computer Science",
+            "current_position": "Senior Software Engineer",
+            "company": "Google",
+            "location": "Mountain View, CA",
+            "achievements": ["Tech Innovation Award"],
+            "image": "https://api.example.com/media/alumni/alemayehu.jpg",
+            "bio": "Leading AI research at Google...",
+            "linkedin": "https://linkedin.com/in/alemayehu-worku",
+            "industry": "Technology"
+          }
+        ]
+      }
+    },
+    "faculty_tributes": {
+      "endpoint": "GET /api/faculty-tributes/",
+      "response": {
+        "count": 25,
+        "results": [
+          {
+            "id": 1,
+            "name": "Dr. Alemayehu Tadesse",
+            "title": "Professor of Computer Science",
+            "department": "Computer Science and Engineering",
+            "years_of_service": 25,
+            "specialization": "Artificial Intelligence & Machine Learning",
+            "image": "https://api.example.com/media/faculty/alemayehu.jpg",
+            "tribute": "Dr. Alemayehu has been an inspiring mentor...",
+            "achievements": ["Excellence in Teaching Award 2023"],
+            "courses_taught": ["Introduction to AI", "Machine Learning"],
+            "student_testimonial": "Dr. Alemayehu didn't just teach us algorithms...",
+            "submitted_by": "Class of 2023 Students",
+            "submission_date": "2024-01-15T10:30:00Z"
+          }
+        ]
+      }
+    },
+    "memories": {
+      "endpoint": "GET /api/memories/?category=campus-life",
+      "response": {
+        "count": 100,
+        "results": [
+          {
+            "id": 1,
+            "title": "First Day at ASTU",
+            "content": "I still remember walking through the gates...",
+            "author": "Hanan Mohammed",
+            "author_program": "Computer Science",
+            "author_year": "Class of 2024",
+            "date_posted": "2024-01-15T14:30:00Z",
+            "category": "Campus Life",
+            "image": "https://api.example.com/media/memories/first-day.jpg",
+            "likes": 45,
+            "comments": 12,
+            "tags": ["freshman", "campus", "memories"]
+          }
+        ]
+      }
+    },
+    "submit_memory": {
+      "endpoint": "POST /api/memories/",
+      "request_body": {
+        "title": "My ASTU Memory",
+        "content": "This is my cherished memory from ASTU...",
+        "category": "Campus Life",
+        "author": "John Doe",
+        "author_program": "Computer Science",
+        "author_year": "Class of 2024",
+        "tags": ["memory", "campus"]
+      },
+      "response": {
+        "id": 101,
+        "title": "My ASTU Memory",
+        "content": "This is my cherished memory from ASTU...",
+        "author": "John Doe",
+        "author_program": "Computer Science",
+        "author_year": "Class of 2024",
+        "date_posted": "2024-01-30T10:15:00Z",
+        "category": "Campus Life",
+        "likes": 0,
+        "comments": 0,
+        "tags": ["memory", "campus"]
+      }
+    },
+    "submit_tribute": {
+      "endpoint": "POST /api/faculty-tributes/",
+      "request_body": {
+        "faculty_name": "Dr. Meron Zeleke",
+        "department": "Electrical Engineering",
+        "tribute_text": "Professor Meron has been an incredible mentor...",
+        "submitted_by": "EEE Students"
+      },
+      "response": {
+        "id": 26,
+        "faculty_name": "Dr. Meron Zeleke",
+        "department": "Electrical Engineering",
+        "tribute_text": "Professor Meron has been an incredible mentor...",
+        "submitted_by": "EEE Students",
+        "submission_date": "2024-01-30T11:20:00Z",
+        "status": "pending_approval"
+      }
+    }
+  }
+}
