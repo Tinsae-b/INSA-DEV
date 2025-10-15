@@ -11,7 +11,7 @@ import PageHeader from "@/components/PageHeader"
 import { Heart } from "lucide-react"
 
 // API base URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8085/yearbook/api"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://172.27.12.216:8000/yearbook/api"
 
 interface MemoryCategory {
   id: number

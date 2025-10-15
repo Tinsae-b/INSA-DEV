@@ -41,7 +41,7 @@ const fallbackStudentsData: Student[] = [
     department: 1,
     department_name: "Cyber Security",
     photo_url: "/placeholder-user.jpg",
-    certificate_url: "http://localhost:8085/media/certificates/generated/INSA001_Alemayehu_Kebede_certificate.png",
+    certificate_url: "http://172.27.12.216:8000/media/certificates/generated/INSA001_Alemayehu_Kebede_certificate.png",
     quote: "Cybersecurity is not just a job, it's a mission to protect our nation's digital future.",
     last_words: "The INSA Cyber Talent program has transformed me into a cybersecurity professional. I'm proud to be part of Ethiopia's digital defense team. Thank you for this incredible journey!",
     highlight_tagline: "Advanced Threat Detection Specialist",
@@ -58,7 +58,7 @@ const fallbackStudentsData: Student[] = [
     department: 2,
     department_name: "Development",
     photo_url: "/placeholder-user.jpg",
-    certificate_url: "http://localhost:8085/media/certificates/generated/INSA002_Sara_Teshome_certificate.png",
+    certificate_url: "http://172.27.12.216:8000/media/certificates/generated/INSA002_Sara_Teshome_certificate.png",
     quote: "Building secure applications that protect millions of users has been my dream.",
     last_words: "Building secure applications that protect millions of users has been my dream. INSA Cyber Talent made it possible. Ready to secure Ethiopia's digital future!",
     highlight_tagline: "Secure Software Developer",
@@ -75,7 +75,7 @@ const fallbackStudentsData: Student[] = [
     department: 3,
     department_name: "Embedded Systems",
     photo_url: "/placeholder-user.jpg",
-    certificate_url: "http://localhost:8085/media/certificates/generated/INSA003_Michael_Abebe_certificate.png",
+    certificate_url: "http://172.27.12.216:8000/media/certificates/generated/INSA003_Michael_Abebe_certificate.png",
     quote: "Securing critical infrastructure is a huge responsibility and privilege.",
     last_words: "Securing critical infrastructure like aviation systems is a huge responsibility. I'm grateful to INSA for preparing me to protect our nation's most important systems.",
     highlight_tagline: "IoT Security Engineer",
@@ -92,7 +92,7 @@ const fallbackStudentsData: Student[] = [
     department: 4,
     department_name: "Emerging Technologies",
     photo_url: "/placeholder-user.jpg",
-    certificate_url: "http://localhost:8085/media/certificates/generated/INSA004_Hanan_Mohammed_certificate.png",
+    certificate_url: "http://172.27.12.216:8000/media/certificates/generated/INSA004_Hanan_Mohammed_certificate.png",
     quote: "Using emerging technologies to defend against cyber threats is the future of cybersecurity.",
     last_words: "Using emerging technologies to defend against cyber threats is the future. INSA gave me the tools to be at the forefront of this revolution. Proud to be an emerging tech security specialist!",
     highlight_tagline: "Emerging Tech Security Specialist",
@@ -109,7 +109,7 @@ const fallbackStudentsData: Student[] = [
     department: 5,
     department_name: "Aerospace",
     photo_url: "/placeholder-user.jpg",
-    certificate_url: "http://localhost:8085/media/certificates/generated/INSA005_Dawit_Assefa_certificate.png",
+    certificate_url: "http://172.27.12.216:8000/media/certificates/generated/INSA005_Dawit_Assefa_certificate.png",
     quote: "Securing Ethiopia's space communications is a privilege and honor.",
     last_words: "Securing Ethiopia's space communications is a privilege. INSA Cyber Talent prepared me for this frontier of cybersecurity. Ready to protect our nation's space assets!",
     highlight_tagline: "Space Systems Security Expert",
@@ -126,7 +126,7 @@ const fallbackStudentsData: Student[] = [
     department: 1,
     department_name: "Cyber Security",
     photo_url: "/placeholder-user.jpg",
-    certificate_url: "http://localhost:8085/media/certificates/generated/INSA006_Rahel_Belete_certificate.png",
+    certificate_url: "http://172.27.12.216:8000/media/certificates/generated/INSA006_Rahel_Belete_certificate.png",
     quote: "Every day is a new challenge in cybersecurity, and I'm ready for it.",
     last_words: "Every day is a new challenge in cybersecurity. INSA taught me to be resilient and always stay ahead of threats. Grateful for this life-changing opportunity!",
     highlight_tagline: "Network Security Analyst",
@@ -143,7 +143,7 @@ const fallbackStudentsData: Student[] = [
     department: 2,
     department_name: "Development",
     photo_url: "/placeholder-user.jpg",
-    certificate_url: "http://localhost:8085/media/certificates/generated/INSA007_Samuel_Teshome_certificate.png",
+    certificate_url: "http://172.27.12.216:8000/media/certificates/generated/INSA007_Samuel_Teshome_certificate.png",
     quote: "Blockchain technology is revolutionizing security and I'm part of it.",
     last_words: "Blockchain technology is revolutionizing security. INSA gave me the expertise to build secure, decentralized systems. Excited to contribute to Ethiopia's digital transformation!",
     highlight_tagline: "Blockchain Security Developer",
@@ -160,7 +160,7 @@ const fallbackStudentsData: Student[] = [
     department: 3,
     department_name: "Embedded Systems",
     photo_url: "/placeholder-user.jpg",
-    certificate_url: "http://localhost:8085/media/certificates/generated/INSA008_Meron_Zeleke_certificate.png",
+    certificate_url: "http://172.27.12.216:8000/media/certificates/generated/INSA008_Meron_Zeleke_certificate.png",
     quote: "Smart cities need smart security, and I'm here to provide it.",
     last_words: "Smart cities need smart security. INSA prepared me to secure the connected future. Proud to be part of Ethiopia's smart city security initiatives!",
     highlight_tagline: "Smart City Security Engineer",
@@ -429,7 +429,7 @@ export default function MemoryBoardPage() {
                   />
                   {/* Clickable overlay for the verification link area on the certificate */}
                   <a
-                    href={`http://localhost:8085/yearbook/verify/${selectedStudent.student_id}/`}
+                    href={`http://172.27.12.216:8000/yearbook/verify/${selectedStudent.student_id}/`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="absolute cursor-pointer hover:bg-blue-500 hover:bg-opacity-10 transition-all"
@@ -448,7 +448,7 @@ export default function MemoryBoardPage() {
                     🔗 Click on the verification link in the certificate to verify
                   </p>
                   <a 
-                    href={`http://localhost:8085/yearbook/verify/${selectedStudent.student_id}/`}
+                    href={`http://172.27.12.216:8000/yearbook/verify/${selectedStudent.student_id}/`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 hover:underline font-medium"
@@ -465,7 +465,7 @@ export default function MemoryBoardPage() {
             <div className="p-4 border-t flex justify-end gap-3">
               <Button 
                 variant="outline"
-                onClick={() => window.open(`http://localhost:8085/yearbook/verify/${selectedStudent.student_id}/`, '_blank')}
+                onClick={() => window.open(`http://172.27.12.216:8000/yearbook/verify/${selectedStudent.student_id}/`, '_blank')}
               >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

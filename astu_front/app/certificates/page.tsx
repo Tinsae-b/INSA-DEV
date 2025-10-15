@@ -9,7 +9,7 @@ import { Download, Eye, GraduationCap, ExternalLink } from "lucide-react"
 import { useState, useEffect } from "react"
 
 // API base URL for certificate endpoints - using port 8085
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8085/yearbook/api"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://172.27.12.216:8000/yearbook/api"
 
 interface CertificateData {
   id: number
@@ -46,7 +46,7 @@ export default function CertificatesPage() {
             name: student.name,
             department_name: student.department_name,
             certificate_url: student.certificate_url,
-            verification_url: `http://localhost:8085/yearbook/verify/${studentId}/`
+            verification_url: `http://172.27.12.216:8000/yearbook/verify/${studentId}/`
           }
         })
         
@@ -302,7 +302,7 @@ export default function CertificatesPage() {
             </ul>
             <p className="mt-4 font-semibold">Example verification URL:</p>
             <p className="text-blue-600 font-mono text-xs break-all">
-              http://localhost:8085/yearbook/verify/INSA009/
+              http://172.27.12.216:8000/yearbook/verify/INSA009/
             </p>
           </div>
         </div>
