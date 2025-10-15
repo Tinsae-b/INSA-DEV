@@ -33,25 +33,40 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = ['id', 'student_id', 'name', 'department', 'department_name', 'photo_url', 'certificate_url', 'quote', 'last_words', 'highlight_tagline', 'description', 'is_featured', 'created_at', 'updated_at', 'my_story', 'profile_images']
         
     def get_photo_url(self, obj):
-        request = self.context.get('request')
-        if obj.photo and request:
-            return request.build_absolute_uri(obj.photo.url)
-        return obj.photo.url if obj.photo else None
+        try:
+            # Check if photo field exists and has a value
+            if not obj.photo or not obj.photo.name:
+                return None
+                
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.photo.url)
+            else:
+                # Fallback: return relative URL if no request context
+                return obj.photo.url
+        except Exception:
+            # Handle media storage issues gracefully - return placeholder
+            return "/placeholder-user.jpg"
     
     def get_certificate_url(self, obj):
-        request = self.context.get('request')
-        # The frontend expects the certificate endpoint under the API prefix
-        # Use the request to build an absolute URI when available
-        if request:
-            # Note: router registers viewsets under /yearbook/api/, so the certificate action is at
-            # /yearbook/api/students/{id}/certificate/
-            return request.build_absolute_uri(f'/yearbook/api/students/{obj.id}/certificate/')
-        # Fallback: try to use Django settings to construct a SITE_URL if provided
-        from django.conf import settings
-        site_url = getattr(settings, 'SITE_URL', None)
-        if site_url:
-            return f"{site_url.rstrip('/')}/yearbook/api/students/{obj.id}/certificate/"
-        return None
+        try:
+            request = self.context.get('request')
+            # The frontend expects the certificate endpoint under the API prefix
+            # Use the request to build an absolute URI when available
+            if request:
+                # Note: router registers viewsets under /yearbook/api/, so the certificate action is at
+                # /yearbook/api/students/{id}/certificate/
+                return request.build_absolute_uri(f'/yearbook/api/students/{obj.id}/certificate/')
+            # Fallback: try to use Django settings to construct a SITE_URL if provided
+            from django.conf import settings
+            site_url = getattr(settings, 'SITE_URL', None)
+            if site_url:
+                return f"{site_url.rstrip('/')}/yearbook/api/students/{obj.id}/certificate/"
+            # Final fallback: use the server IP
+            return f"http://172.27.12.216:8000/yearbook/api/students/{obj.id}/certificate/"
+        except Exception:
+            # Handle any errors gracefully
+            return None
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)

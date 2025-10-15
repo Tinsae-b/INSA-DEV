@@ -118,8 +118,8 @@ class Student(models.Model):
             draw.text((name_x, name_y), name_text, fill="black", font=font_name)
             
             # Add verification link (centered horizontally, fixed vertical position)
-            # Use local verification URL that actually works
-            verification_link = f"http://localhost:8085/yearbook/verify/{sid}/"
+            # Use the actual server URL for verification
+            verification_link = f"http://172.27.12.216:8000/yearbook/verify/{sid}/"
             link_bbox = draw.textbbox((0, 0), verification_link, font=font_link)
             link_width = link_bbox[2] - link_bbox[0]
             link_x = (img.width - link_width) // 2

@@ -18,5 +18,6 @@ router.register(r'leadership', views.LeadershipViewSet)
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api/health/', views.health_check, name='health_check'),
+    path('api/test/', views.test_endpoint, name='test_endpoint'),
     path('verify/<str:student_id>/', views.verify_certificate_view, name='verify_certificate'),
 ]

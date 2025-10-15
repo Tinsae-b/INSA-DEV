@@ -58,6 +58,30 @@ def health_check(request):
     
     return JsonResponse(health_status, status=status_code)
 
+# Simple test endpoint to check database
+@api_view(['GET'])
+def test_endpoint(request):
+    """
+    Simple test endpoint to check if basic database operations work
+    """
+    try:
+        from .models import Student, Department
+        student_count = Student.objects.count()
+        dept_count = Department.objects.count()
+        
+        return JsonResponse({
+            'status': 'success',
+            'student_count': student_count,
+            'department_count': dept_count,
+            'message': 'Database queries working'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'error': str(e),
+            'message': 'Database query failed'
+        }, status=500)
+
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all().prefetch_related('students')
     serializer_class = DepartmentSerializer
